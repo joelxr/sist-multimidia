@@ -1,11 +1,11 @@
 package br.edu.ifce.calculation;
 
+import br.edu.ifce.data.Tree;
+import br.edu.ifce.data.TreeNode;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Joel Rocha
@@ -15,10 +15,11 @@ public class HuffmanEntropy extends Entropy {
 
     private Map<Character, Integer> dictionary;
     private Map<Character, Double> dictionaryFrequency;
+    private Tree tree;
 
     public HuffmanEntropy() {
         dictionary = new HashMap<Character, Integer>();
-        dictionaryFrequency = new HashMap<Character, Double>();
+        dictionaryFrequency = new TreeMap<Character, Double>();
     }
 
     public static void main(String[] args) {
@@ -29,6 +30,18 @@ public class HuffmanEntropy extends Entropy {
         System.out.println("Occurrences: " + e.getDictionary());
         System.out.println("Entropy: " + e.calculateEntropy());
         System.out.println("Probabilities: " + e.getDictionaryFrequency());
+
+        SortedSet<TreeNode> set = new TreeSet<TreeNode> ();
+
+        for (Map.Entry<Character, Double> entry : e.getDictionaryFrequency().entrySet()) {
+            TreeNode node = new TreeNode();
+            node.setProbability(entry.getValue());
+            char[] array = {entry.getKey()};
+            node.setData( array);
+            set.add(node);
+        }
+
+        System.out.println(set);
     }
 
     public void readData() {
@@ -105,6 +118,32 @@ public class HuffmanEntropy extends Entropy {
 
         entropy = -entropy;
         return entropy;
+    }
+
+    public void generateTree (Map<Character, Double> dictionary) {
+
+        Character primeiroMenor = (Character) dictionary.keySet().toArray()[0];
+        Double primeiroMenorProb = (Double) dictionary.values().toArray()[0];
+
+        // pega o 1o. menor
+        for (Map.Entry<Character, Double> entry : dictionary.entrySet()) {
+            Character character = entry.getKey();
+            Double probality = entry.getValue();
+
+            if (probality <= primeiroMenorProb) {
+                primeiroMenor = character;
+                primeiroMenorProb = probality;
+            }
+        }
+
+
+
+        // pega o 2o. menor
+        for (Map.Entry<Character, Double> entry : dictionary.entrySet()) {
+            Character character = entry.getKey();
+            Double probality = entry.getValue();
+
+        }
     }
 
     public Map<Character, Integer> getDictionary() {

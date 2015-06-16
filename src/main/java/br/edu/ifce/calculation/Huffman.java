@@ -25,13 +25,12 @@ public class Huffman {
     public static void main(String[] args) {
         Huffman huffman = new Huffman();
 
-
         try {
             huffman.createDictionaryFromFile("data.txt");
 
-            for (Node n : huffman.getDictionary()) {
-                System.out.println(n);
-            }
+//            for (Node n : huffman.getDictionary()) {
+//                System.out.println(n);
+//            }
 
             huffman.generateTree();
 
@@ -91,8 +90,6 @@ public class Huffman {
     public void calculateProbabilities() {
         TreeSet<Node> nodes = new TreeSet<Node>();
 
-        TreeSet<Node> tempTree = new TreeSet<Node>();
-        
         for (Node node : dictionary) {
             double probability = node.getFrequency() / occurrences;
             node.setProbability(probability);
@@ -115,28 +112,54 @@ public class Huffman {
 
     public void generateTree() {
         NavigableSet<Node> navigableSet = this.dictionary.descendingSet();
-
-        Node last = navigableSet.pollLast();
-        Node sndLast = navigableSet.pollLast();
-
-        Node node = join(last, sndLast);
-        last.setRoot(node);
-        sndLast.setRoot(node);
-
-        TreeSet<Node> set = new TreeSet<Node>();
-        set.add(last);
-        set.add(sndLast);
-        set.add(node);
-
-        for (Node n : navigableSet) {
-            int previousLevel = n.getLevel();
-            n.setLevel(++previousLevel);
-            set.add(n);
+        TreeSet<Node> tmpTree = new TreeSet<Node>();
+        
+        Node last = null;
+        Node sndLast = null;
+        
+        while(navigableSet.first().getProbability() < 1) {
+        	last = navigableSet.pollLast();
+        	sndLast = navigableSet.pollLast();
+        	
+        	Node node = join(last, sndLast);
+        	last.setRoot(node);
+        	sndLast.setRoot(node);
+        	
+        	tmpTree.add(last);
+        	tmpTree.add(sndLast);
+        	tmpTree.add(node);
+        	navigableSet.add(node);
         }
 
-        this.dictionary = set;
+        this.dictionary = tmpTree;
     }
 
+//    public void generateTree() {
+//        NavigableSet<Node> navigableSet = this.dictionary.descendingSet();
+//
+//        last = navigableSet.pollLast();
+//        sndLast = navigableSet.pollLast();
+//        
+//
+//        Node node = join(last, sndLast);
+//        last.setRoot(node);
+//        sndLast.setRoot(node);
+//
+//        TreeSet<Node> set = new TreeSet<Node>();
+//        set.add(last);
+//        set.add(sndLast);
+//        set.add(node);
+//
+//        for (Node n : navigableSet) {
+//            int previousLevel = n.getLevel();
+//            n.setLevel(++previousLevel);
+//            set.add(n);
+//        }
+//
+//        currentLevel++;
+//        this.dictionary = set;
+//    }
+    
     public NavigableSet<Node> generateTree(NavigableSet<Node> navigableSet) {
 
         return null;

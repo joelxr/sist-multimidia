@@ -14,6 +14,10 @@ public class Node implements Comparable<Node> {
         this.frequency = 1;
     }
 
+    public Node(char c) {
+        this(String.valueOf(c));
+    }
+
     public int getFrequency() {
         return frequency;
     }

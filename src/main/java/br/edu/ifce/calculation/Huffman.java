@@ -23,36 +23,36 @@ public class Huffman {
 
     public static void main(String[] args) {
         Huffman huffman = new Huffman();
-        huffman.readData();
-        System.out.println("Occurrences: " + huffman.getDictionary());
-        System.out.println("Entropy: " + huffman.calculateEntropy());
-    }
-
-    public void readData() {
-        List<String> data = null;
-        String content = "";
 
         try {
-            data = readFile("data.txt");
-
-            for (String s : data) {
-                content += s;
-            }
-
-            for (char c : content.toCharArray()) {
-                Node node = new Node(c);
-
-                if (dictionary.contains(node)) {
-                    Node aux = dictionary.headSet(node, true).last();
-                    int count = aux.getFrequency();
-                    aux.setFrequency(++count);
-                } else {
-                    dictionary.add(node);
-                }
-            }
+            huffman.createDictionaryFromFile("data.txt");
+            System.out.println("Entropy: " + huffman.calculateEntropy());
+            System.out.println("Occurrences: " + huffman.getDictionary());
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void createDictionaryFromFile(String filename) throws IOException {
+        StringBuilder content = new StringBuilder();
+        List<String> data = readFile(filename);
+
+        for (String s : data) {
+            content.append(s);
+        }
+
+        for (char c : content.toString().toCharArray()) {
+            Node node = new Node(""+ c);
+
+            if (dictionary.contains(node)) {
+                Node aux = dictionary.headSet(node, true).last();
+                int count = aux.getFrequency();
+                aux.setFrequency(++count);
+            } else {
+                dictionary.add(node);
+            }
+        }
+
     }
 
 
@@ -68,8 +68,9 @@ public class Huffman {
                 records.add(line);
             }
         } finally {
-            if (reader != null)
+            if (reader != null) {
                 reader.close();
+            }
         }
 
         return records;
@@ -86,8 +87,7 @@ public class Huffman {
             entropy += probability * Math.log(probability) / Math.log(2);
         }
 
-        entropy = -entropy;
-        return entropy;
+        return -entropy;
     }
 
     private double getTotalFrequency() {
@@ -102,9 +102,5 @@ public class Huffman {
 
     public TreeSet<Node> getDictionary() {
         return dictionary;
-    }
-
-    public void setDictionary(TreeSet<Node> dictionary) {
-        this.dictionary = dictionary;
     }
 }

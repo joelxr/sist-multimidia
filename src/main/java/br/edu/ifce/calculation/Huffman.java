@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -24,8 +25,11 @@ public class Huffman {
     public static void main(String[] args) {
         Huffman huffman = new Huffman();
         huffman.readData();
-        System.out.println("Occurrences: " + huffman.getDictionary());
         System.out.println("Entropy: " + huffman.calculateEntropy());
+        System.out.println("Occurrences: " + huffman.getDictionary());
+
+        System.out.println( huffman.getDictionary().first() );
+        System.out.println( huffman.getDictionary().ceiling( huffman.getDictionary().first() ) );
     }
 
     public void readData() {
@@ -79,13 +83,18 @@ public class Huffman {
         double totalFrequency = getTotalFrequency();
         double entropy = 0.0;
 
+        TreeSet<Node> tempTree = new TreeSet<Node>();
+        
         for (Node node : dictionary) {
             int frequency = node.getFrequency();
             double probability = frequency / totalFrequency;
             node.setProbability(probability);
             entropy += probability * Math.log(probability) / Math.log(2);
+            tempTree.add(node);
         }
-
+        
+        this.dictionary = tempTree;
+        
         entropy = -entropy;
         return entropy;
     }

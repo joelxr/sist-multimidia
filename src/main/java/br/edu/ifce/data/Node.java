@@ -86,7 +86,7 @@ public class Node implements Comparable<Node> {
 
         result = compareDouble(this.getProbability(), node.getProbability());
         if (result != 0) return result;
-
+        
         result = compareInt(this.getValue(), node.getValue());
         return result;
     }

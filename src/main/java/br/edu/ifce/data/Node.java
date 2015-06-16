@@ -2,19 +2,22 @@ package br.edu.ifce.data;
 
 public class Node implements Comparable<Node> {
 
-    private char value;
-    private String trace;
+    private String value;
     private int frequency;
     private double probability;
     private Node left;
     private Node right;
     private Node root;
-    private int key;
+    private int level;
 
-    public Node(char data) {
-        this.value = data;
-        this.trace = "" + data;
+    public Node(String value) {
+        this.value = value;
         this.frequency = 1;
+        this.level = 0;
+    }
+
+    public Node(char c) {
+        this(String.valueOf(c));
     }
 
     public int getFrequency() {
@@ -25,20 +28,8 @@ public class Node implements Comparable<Node> {
         this.frequency = frequency;
     }
 
-    public char getValue() {
+    public String getValue() {
         return value;
-    }
-
-    public void setValue(char value) {
-        this.value = value;
-    }
-
-    public String getTrace() {
-        return trace;
-    }
-
-    public void setTrace(String trace) {
-        this.trace = trace;
     }
 
     public double getProbability() {
@@ -73,42 +64,31 @@ public class Node implements Comparable<Node> {
         this.root = root;
     }
 
-    public int getKey() {
-        return key;
+    public int getLevel() {
+        return level;
     }
 
-    public void setKey(int key) {
-        this.key = key;
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public int compareTo(Node node) {
         int result;
 
-        result = compareDouble(this.getProbability(), node.getProbability());
-        if (result != 0) return result;
-        
-        result = compareInt(this.getValue(), node.getValue());
-        return result;
-    }
 
-    private static int compareInt(int i1, int i2) {
-        if (i1 < i2) {
-            return -1;
-        } else if (i1 > i2) {
-            return +1;
+        if (this.getProbability() < node.getProbability()) {
+            result = -1;
+        } else if (this.getProbability() > node.getProbability()) {
+            result = 1;
         } else {
-            return 0;
+            result = 0;
         }
-    }
 
-    private static int compareDouble(double d1, double d2) {
-        if (d1 < d2) {
-            return -1;
-        } else if (d1 > d2) {
-            return +1;
-        } else {
-            return 0;
+        if (result != 0) {
+            return result;
         }
+
+        return this.getValue().compareTo(node.getValue());
     }
 
     @Override
@@ -120,12 +100,26 @@ public class Node implements Comparable<Node> {
     }
 
     @Override
-    public int hashCode() {
-        return (int) getValue();
-    }
-
-    @Override
     public String toString() {
-        return value + "{trace=" + trace + ",frequency=" + frequency + ",probability=" + probability + "}";
+
+        String s = "'" + value + "'{" +
+                "frequency=" + frequency +
+                ",probability=" + probability +
+                ",level=" + level;
+
+        if (left != null) {
+            s += ",left='" + left.getValue() + "'";
+        }
+
+        if (right != null) {
+            s += ",right='" + right.getValue() + "'";
+        }
+
+        if (root != null) {
+            s += ",root='" + root.getValue() + "'";
+        }
+
+        s += "}";
+        return s;
     }
 }

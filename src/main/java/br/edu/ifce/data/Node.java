@@ -8,10 +8,12 @@ public class Node implements Comparable<Node> {
     private Node left;
     private Node right;
     private Node root;
+    private int level;
 
     public Node(String value) {
         this.value = value;
         this.frequency = 1;
+        this.level = 0;
     }
 
     public Node(char c) {
@@ -62,6 +64,14 @@ public class Node implements Comparable<Node> {
         this.root = root;
     }
 
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     public int compareTo(Node node) {
         int result;
 
@@ -90,6 +100,25 @@ public class Node implements Comparable<Node> {
 
     @Override
     public String toString() {
-        return value + "{frequency=" + frequency + ",probability=" + probability + "}";
+
+        String s = "'" + value + "'{" +
+                "frequency=" + frequency +
+                ",probability=" + probability +
+                ",level=" + level;
+
+        if (left != null) {
+            s += ",left='" + left.getValue() + "'";
+        }
+
+        if (right != null) {
+            s += ",right='" + right.getValue() + "'";
+        }
+
+        if (root != null) {
+            s += ",root='" + root.getValue() + "'";
+        }
+
+        s += "}";
+        return s;
     }
 }

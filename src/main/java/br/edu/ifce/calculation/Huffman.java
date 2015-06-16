@@ -5,6 +5,7 @@ import br.edu.ifce.data.Node;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.NavigableSet;
 import java.util.TreeSet;
 
 /**
@@ -26,6 +27,14 @@ public class Huffman {
 
         try {
             huffman.createDictionaryFromFile("data.txt");
+
+            for (Node n : huffman.getDictionary()) {
+                System.out.println(n);
+            }
+
+            huffman.generateTree();
+
+            System.out.print("\n\n");
 
             for (Node n : huffman.getDictionary()) {
                 System.out.println(n);
@@ -98,6 +107,46 @@ public class Huffman {
         }
 
         return -entropy;
+    }
+
+    public void generateTree() {
+        NavigableSet<Node> navigableSet = this.dictionary.descendingSet();
+
+        Node last = navigableSet.pollLast();
+        Node sndLast = navigableSet.pollLast();
+
+        Node node = join(last, sndLast);
+        last.setRoot(node);
+        sndLast.setRoot(node);
+
+        TreeSet<Node> set = new TreeSet<Node>();
+        set.add(last);
+        set.add(sndLast);
+        set.add(node);
+
+        for (Node n : navigableSet) {
+            int previousLevel = n.getLevel();
+            n.setLevel(++previousLevel);
+            set.add(n);
+        }
+
+        this.dictionary = set;
+    }
+
+    public NavigableSet<Node> generateTree(NavigableSet<Node> navigableSet) {
+
+        return null;
+    }
+
+    public Node join(Node node1, Node node2) {
+        Node newNode = new Node(node1.getValue() + node2.getValue());
+        newNode.setFrequency(node1.getFrequency() + node2.getFrequency());
+        newNode.setProbability(node1.getProbability() + node2.getProbability());
+        newNode.setLeft(node1);
+        newNode.setRight(node2);
+        int previousLevel = node1.getLevel();
+        newNode.setLevel(++previousLevel);
+        return newNode;
     }
 
     public TreeSet<Node> getDictionary() {

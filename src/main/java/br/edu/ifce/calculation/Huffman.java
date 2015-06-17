@@ -134,32 +134,6 @@ public class Huffman {
         this.dictionary = tmpTree;
     }
 
-//    public void generateTree() {
-//        NavigableSet<Node> navigableSet = this.dictionary.descendingSet();
-//
-//        last = navigableSet.pollLast();
-//        sndLast = navigableSet.pollLast();
-//        
-//
-//        Node node = join(last, sndLast);
-//        last.setRoot(node);
-//        sndLast.setRoot(node);
-//
-//        TreeSet<Node> set = new TreeSet<Node>();
-//        set.add(last);
-//        set.add(sndLast);
-//        set.add(node);
-//
-//        for (Node n : navigableSet) {
-//            int previousLevel = n.getLevel();
-//            n.setLevel(++previousLevel);
-//            set.add(n);
-//        }
-//
-//        currentLevel++;
-//        this.dictionary = set;
-//    }
-    
     public NavigableSet<Node> generateTree(NavigableSet<Node> navigableSet) {
 
         return null;
@@ -171,8 +145,6 @@ public class Huffman {
         newNode.setProbability(node1.getProbability() + node2.getProbability());
         newNode.setLeft(node1);
         newNode.setRight(node2);
-        int previousLevel = node1.getLevel();
-        newNode.setLevel(++previousLevel);
         return newNode;
     }
 

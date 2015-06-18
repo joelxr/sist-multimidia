@@ -5,10 +5,8 @@ import br.edu.ifce.data.Node;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NavigableSet;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Joel Rocha
@@ -35,14 +33,8 @@ public class Huffman {
 
             System.out.println(huffman.getDictionary());
             System.out.println(huffman.translate());
-
             System.out.println(huffman.calculateEntropy());
-            System.out.println(huffman.get_());
-
-            for (Node n : huffman.getNodes()) {
-                System.out.println(n);
-            }
-
+            System.out.println(huffman.getAverageLength());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,7 +88,6 @@ public class Huffman {
         for (Node node : this.nodes) {
             double probability = node.getFrequency() / occurrences;
             node.setProbability(probability);
-
             nodes.add(node);
         }
 
@@ -106,8 +97,9 @@ public class Huffman {
     public double calculateEntropy() {
         double entropy = 0.0;
 
-        for (Node node : nodes) {
-            entropy += node.getProbability() * (Math.log(node.getProbability()) / Math.log(2));
+        for (Node node : nodes.stream().filter(n -> n.getValue().length() == 1).collect(Collectors.toList())) {
+            double aux = (Math.log(node.getProbability()) / Math.log(2));
+            entropy += node.getProbability() * aux;
         }
 
         return -entropy;
@@ -165,8 +157,8 @@ public class Huffman {
         this.dictionary = map;
     }
 
-    public String translate () {
-        String result  ="";
+    public String translate() {
+        String result = "";
 
         for (char c : this.fileContent.toCharArray()) {
             result += dictionary.get(c);
@@ -175,7 +167,7 @@ public class Huffman {
         return result;
     }
 
-    public double get_ () {
+    public double getAverageLength() {
 
         NavigableSet<Node> navigableSet = nodes.descendingSet();
         double sum = 0.0;

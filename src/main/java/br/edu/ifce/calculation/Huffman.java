@@ -1,12 +1,14 @@
 package br.edu.ifce.calculation;
 
+import br.edu.ifce.data.Node;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NavigableSet;
 import java.util.TreeSet;
-
-import br.edu.ifce.data.Node;
 
 /**
  * @author Joel Rocha
@@ -14,12 +16,13 @@ import br.edu.ifce.data.Node;
  */
 public class Huffman {
 
-    private TreeSet<Node> dictionary;
+    private TreeSet<Node> nodes;
     private String fileContent;
     private double occurrences;
+    private Map<Character, String> dictionary;
 
     public Huffman() {
-        dictionary = new TreeSet<Node>();
+        nodes = new TreeSet<Node>();
     }
 
     public static void main(String[] args) {
@@ -27,16 +30,16 @@ public class Huffman {
 
         try {
             huffman.createDictionaryFromFile("data.txt");
-
-//            for (Node n : huffman.getDictionary()) {
-//                System.out.println(n);
-//            }
-
             huffman.generateTree();
+            huffman.generateDictionary();
 
-            System.out.print("\n\n");
+            System.out.println(huffman.getDictionary());
+            System.out.println(huffman.translate());
 
-            for (Node n : huffman.getDictionary()) {
+            System.out.println(huffman.calculateEntropy());
+            System.out.println(huffman.get_());
+
+            for (Node n : huffman.getNodes()) {
                 System.out.println(n);
             }
 
@@ -77,12 +80,12 @@ public class Huffman {
         for (char c : fileContent.toCharArray()) {
             Node node = new Node(c);
 
-            if (dictionary.contains(node)) {
-                Node aux = dictionary.headSet(node, true).last();
+            if (nodes.contains(node)) {
+                Node aux = nodes.headSet(node, true).last();
                 int count = aux.getFrequency();
                 aux.setFrequency(++count);
             } else {
-                dictionary.add(node);
+                nodes.add(node);
             }
         }
     }
@@ -90,53 +93,110 @@ public class Huffman {
     public void calculateProbabilities() {
         TreeSet<Node> nodes = new TreeSet<Node>();
 
-        for (Node node : dictionary) {
+        for (Node node : this.nodes) {
             double probability = node.getFrequency() / occurrences;
             node.setProbability(probability);
 
             nodes.add(node);
         }
 
-        this.dictionary = nodes;
+        this.nodes = nodes;
     }
 
     public double calculateEntropy() {
         double entropy = 0.0;
 
-        for (Node node : dictionary) {
-            entropy += node.getProbability() * Math.log(node.getProbability()) / Math.log(2);
+        for (Node node : nodes) {
+            entropy += node.getProbability() * (Math.log(node.getProbability()) / Math.log(2));
         }
 
         return -entropy;
     }
 
     public void generateTree() {
-        NavigableSet<Node> navigableSet = this.dictionary.descendingSet();
+        NavigableSet<Node> navigableSet = this.nodes.descendingSet();
         TreeSet<Node> tmpTree = new TreeSet<Node>();
-        
+
         Node last = null;
         Node sndLast = null;
-        
-        while(navigableSet.first().getProbability() < 1) {
-        	last = navigableSet.pollLast();
-        	sndLast = navigableSet.pollLast();
-        	
-        	Node node = join(last, sndLast);
-        	last.setRoot(node);
-        	sndLast.setRoot(node);
-        	
-        	tmpTree.add(last);
-        	tmpTree.add(sndLast);
-        	tmpTree.add(node);
-        	navigableSet.add(node);
+
+        while (navigableSet.first().getProbability() < 1) {
+            last = navigableSet.pollLast();
+            sndLast = navigableSet.pollLast();
+
+            Node node = join(last, sndLast);
+            last.setRoot(node);
+            sndLast.setRoot(node);
+
+            tmpTree.add(last);
+            tmpTree.add(sndLast);
+            tmpTree.add(node);
+            navigableSet.add(node);
         }
 
-        this.dictionary = tmpTree;
+        this.nodes = tmpTree;
     }
 
-    public NavigableSet<Node> generateTree(NavigableSet<Node> navigableSet) {
+    public void generateDictionary() {
+        Map<Character, String> map = new HashMap<Character, String>();
+        NavigableSet<Node> navigableSet = this.nodes.descendingSet();
+        String result = "";
+        Node node = navigableSet.first();
+        String value = node.getValue();
 
-        return null;
+        for (char c : value.toCharArray()) {
+
+            while (node.getRight() != null && node.getLeft() != null) {
+
+                if (node.getLeft().getValue().contains(String.valueOf(c))) {
+                    result += 0;
+                    node = node.getLeft();
+                } else {
+                    result += 1;
+                    node = node.getRight();
+                }
+            }
+
+            map.put(c, result);
+            result = "";
+            node = navigableSet.first();
+        }
+
+        this.dictionary = map;
+    }
+
+    public String translate () {
+        String result  ="";
+
+        for (char c : this.fileContent.toCharArray()) {
+            result += dictionary.get(c);
+        }
+
+        return result;
+    }
+
+    public double get_ () {
+
+        NavigableSet<Node> navigableSet = nodes.descendingSet();
+        double sum = 0.0;
+
+        for (Map.Entry<Character, String> entry : this.dictionary.entrySet()) {
+            char c = entry.getKey();
+            double prob = 0;
+
+            for (Node n : navigableSet) {
+                String cValue = String.valueOf(c);
+                if (n.getValue().equals(cValue)) {
+                    prob = n.getProbability();
+                    break;
+                }
+            }
+
+            double result = this.dictionary.get(c).length() * prob;
+            sum += result;
+        }
+
+        return sum;
     }
 
     public Node join(Node node1, Node node2) {
@@ -148,7 +208,11 @@ public class Huffman {
         return newNode;
     }
 
-    public TreeSet<Node> getDictionary() {
+    public TreeSet<Node> getNodes() {
+        return nodes;
+    }
+
+    public Map<Character, String> getDictionary() {
         return dictionary;
     }
 }

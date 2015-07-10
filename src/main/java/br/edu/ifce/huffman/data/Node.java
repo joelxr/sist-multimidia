@@ -1,4 +1,4 @@
-package br.edu.ifce.data;
+package br.edu.ifce.huffman.data;
 
 public class Node implements Comparable<Node> {
 

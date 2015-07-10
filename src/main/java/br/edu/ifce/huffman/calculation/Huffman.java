@@ -1,11 +1,14 @@
-package br.edu.ifce.calculation;
+package br.edu.ifce.huffman.calculation;
 
-import br.edu.ifce.data.Node;
+import br.edu.ifce.huffman.data.Node;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -31,10 +34,13 @@ public class Huffman {
             huffman.generateTree();
             huffman.generateDictionary();
 
+            for (Node n : huffman.getNodes()) {
+                System.out.println(n);
+            }
+
             System.out.println(huffman.getDictionary());
-            System.out.println(huffman.translate());
-            System.out.println(huffman.calculateEntropy());
-            System.out.println(huffman.getAverageLength());
+            System.out.println("Entropia: "+ huffman.calculateEntropy());
+            System.out.println("Comprimento médio: " + huffman.getAverageLength());
         } catch (IOException e) {
             e.printStackTrace();
         }

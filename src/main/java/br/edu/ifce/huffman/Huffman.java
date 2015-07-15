@@ -1,8 +1,5 @@
 package br.edu.ifce.huffman;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableSet;
@@ -16,7 +13,6 @@ import java.util.stream.Collectors;
 public class Huffman {
 
     private TreeSet<Node> nodes;
-    private String fileContent;
     private double occurrences;
     private Map<Character, String> dictionary;
 
@@ -24,56 +20,39 @@ public class Huffman {
         nodes = new TreeSet<Node>();
     }
 
+
     public static void main(String[] args) {
-        Huffman huffman = new Huffman();
-
-        try {
-            huffman.createDictionaryFromFile("data.txt");
-            huffman.generateTree();
-            huffman.generateDictionary();
-
-            for (Node n : huffman.getNodes()) {
-                System.out.println(n);
-            }
-
-            System.out.println(huffman.getDictionary());
-            System.out.println("Entropia: "+ huffman.calculateEntropy());
-            System.out.println("Comprimento médio: " + huffman.getAverageLength());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Huffman().encode("123");
     }
 
-    public void createDictionaryFromFile(String filename) throws IOException {
-        this.fileContent = readFileContent(filename);
-        this.occurrences = fileContent.toCharArray().length;
-        calculateFrequency();
+    public TreeSet<Node> encode(String data) {
+
+        this.createDictionary(data);
+        this.generateTree();
+        this.generateDictionary();
+
+        /*
+        for (Node n : this.getNodes()) {
+            System.out.println(n);
+        }
+
+        System.out.println(this.getDictionary());
+        System.out.println("Entropia: " + this.calculateEntropy());
+        System.out.println("Comprimento médio: " + this.getAverageLength());
+        */
+
+        return nodes;
+    }
+
+    public void createDictionary(String data) {
+        this.occurrences = data.toCharArray().length;
+        calculateFrequency(data);
         calculateProbabilities();
         calculateEntropy();
     }
 
-    public String readFileContent(String filename) throws IOException {
-        StringBuilder content = new StringBuilder();
-        BufferedReader reader = null;
-        String line;
-
-        try {
-            reader = new BufferedReader(new FileReader(filename));
-
-            while ((line = reader.readLine()) != null) {
-                content.append(line);
-            }
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-        }
-
-        return content.toString();
-    }
-
-    public void calculateFrequency() {
-        for (char c : fileContent.toCharArray()) {
+    public void calculateFrequency(String data) {
+        for (char c : data.toCharArray()) {
             Node node = new Node(c);
 
             if (nodes.contains(node)) {
@@ -161,10 +140,10 @@ public class Huffman {
         this.dictionary = map;
     }
 
-    public String translate() {
+    public String translate(String data) {
         String result = "";
 
-        for (char c : this.fileContent.toCharArray()) {
+        for (char c : data.toCharArray()) {
             result += dictionary.get(c);
         }
 

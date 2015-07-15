@@ -1,61 +1,53 @@
 package br.edu.ifce.lz77;
 
-/**
- * Reference:
- * https://msdn.microsoft.com/en-us/library/ee916854.aspx
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class LZ77 {
 
-    private final static String DATA = "aababaaabba";
-    private final static int WINDOW_SIZE = 3;
-
     public static void main(String[] args) {
+        new LZ77().encode("abbabbabbbaababa", 4);
+    }
+
+    public List<Pointer> encode(String data, int window_size) {
+        List<Pointer> result = new ArrayList<>();
         int position = 0;
 
-        while (position < DATA.length()) {
-            int buffer_size = WINDOW_SIZE;
-
+        while (position < data.length()) {
+            int buffer_size = window_size;
             int window_end = position;
-            int window_begin = position - WINDOW_SIZE;
+            int window_begin = position - window_size;
             int buffer_end = position + buffer_size;
             int buffer_begin = position;
+            int buffer_ignore = (buffer_end > data.length()) ? buffer_end - data.length() : 0;
+            int window_position = -1;
 
-            String window = getContent(window_begin, window_end);
-            String buffer = getContent(buffer_begin, buffer_end);
-
-            System.out.println("\n\n" + position);
-            System.out.println("window (start = " + window_begin + ", end = " + window_end + ") " + window);
-            System.out.println("buffer (start = " + buffer_begin + ", end = " + buffer_end + ") " + buffer);
-
+            String window = getContent(data, window_begin, window_end);
+            String buffer = getContent(data, buffer_begin, buffer_end);
             String match = String.valueOf(buffer.charAt(0));
-            int window_length = window.length();
 
             while (buffer_size > 0) {
+                window_position = window.indexOf(buffer);
 
-                if (buffer.equals(window)) {
-                    System.out.println("found... " + buffer);
+                if (window_position != -1) {
                     match = "";
                     break;
                 }
 
                 buffer_size--;
-                window_length--;
-                buffer = getContent(buffer_begin, position + buffer_size);
-                window = getContent(position-window_length,window_end);
-                System.out.print("Reducing window and buffer...  " + buffer);
-                System.out.print(" (window = " + window);
-                System.out.println(", buffer = " + buffer +")");
+                buffer = getContent(data, buffer_begin, position + buffer_size);
             }
 
-            System.out.println("(" + buffer_size + " ," + position + ") " + match);
-
-            position++;
+            result.add(new Pointer(match, window_position, (buffer_size - buffer_ignore)));
+            position = position + ((buffer_size == 0) ? 1 : buffer_size);
         }
+
+        return result;
     }
 
-    public static String getContent(int begin, int end) {
+    public static String getContent(String data, int begin, int end) {
         String result = "";
-        char[] chars = DATA.toCharArray();
+        char[] chars = data.toCharArray();
 
         for (int i = begin; i < end; i++) {
             if (i >= 0 && i < chars.length) {
@@ -64,16 +56,5 @@ public class LZ77 {
         }
 
         return result;
-    }
-}
-
-class Pointer {
-    public char value;
-    public int offset;
-    public int length;
-
-    @Override
-    public String toString() {
-        return value + "(" + offset + "," + length + ")";
     }
 }

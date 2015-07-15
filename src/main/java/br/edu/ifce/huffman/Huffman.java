@@ -1,6 +1,4 @@
-package br.edu.ifce.huffman.calculation;
-
-import br.edu.ifce.huffman.data.Node;
+package br.edu.ifce.huffman;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

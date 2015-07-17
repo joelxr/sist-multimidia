@@ -6,7 +6,11 @@ import java.util.List;
 public class LZ77 {
 
     public static void main(String[] args) {
-        new LZ77().encode("abbabbabbbaababa", 4);
+        LZ77 lz77 = new LZ77();
+        List<Pointer> pointers = lz77.encode("abbabbabbbaababa", 4);
+        String result = lz77.decode(pointers, 4);
+        System.out.println(pointers);
+        System.out.println(result);
     }
 
     public List<Pointer> encode(String data, int window_size) {
@@ -43,6 +47,35 @@ public class LZ77 {
         }
 
         return result;
+    }
+
+    public String decode(List<Pointer> pointers, int window_size) {
+        StringBuilder result = new StringBuilder();
+
+        int window_begin = -window_size;
+        int window_end = 0;
+
+        for (Pointer p : pointers) {
+            String window = getContent(result.toString(), window_begin, window_end);
+
+            if (p.position >= 0) {
+                int aux = (window_end - window.length()) + p.position;
+
+                for (int i = 0; i < p.length; i++) {
+                    char c = window.charAt(aux+i);
+                    result.append(c);
+                }
+
+                window_begin+=p.length;
+            } else {
+                result.append(p.value);
+                window_begin++;
+            }
+
+            window_end = window_begin + window_size;
+        }
+
+        return result.toString();
     }
 
     public static String getContent(String data, int begin, int end) {

@@ -62,7 +62,7 @@ public class LZ77 {
                 int aux = (window_end - window.length()) + p.position;
 
                 for (int i = 0; i < p.length; i++) {
-                    char c = window.charAt(aux+i);
+                    char c = result.charAt(aux+i);
                     result.append(c);
                 }
 

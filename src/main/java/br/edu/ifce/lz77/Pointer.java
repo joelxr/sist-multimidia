@@ -15,4 +15,18 @@ public class Pointer {
     public String toString() {
         return "(" + length + "," + position + ")" + value;
     }
+
+	public String getValue() {
+		return value;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public int getLength() {
+		return length;
+	}
+    
+    
 }

@@ -26,9 +26,12 @@ public class Huffman {
     public static void main(String[] args) {
         Huffman huffman = new Huffman();
         String data = "abcaab";
+        System.out.println(data);
         String encodedString = huffman.encode(data);
+        System.out.println(encodedString);
+        System.out.println(huffman.getDictionary());
         String decodedString = huffman.decode(encodedString);
-
+        System.out.println(decodedString);
         System.out.println((data.equals(decodedString)));
     }
 
@@ -44,17 +47,15 @@ public class Huffman {
             result += dic.get(c);
         }
 
-        System.out.println(this.getDictionary());
-        System.out.println(result);
         return result;
     }
 
     public String decode(String encodedString) {
         String result = "";
         int start = 0;
-        int end = 0;
+        int end = 1;
 
-        while (end < encodedString.length()) {
+        while (end <= encodedString.length()) {
             String current = Util.getContent(encodedString, start, end);
 
             for (Map.Entry<Character, String> entry : this.getDictionary().entrySet()) {
@@ -68,7 +69,7 @@ public class Huffman {
                 }
             }
 
-            end++;
+            end +=  1;
         }
 
         return result;

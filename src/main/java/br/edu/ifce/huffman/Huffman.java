@@ -23,14 +23,14 @@ public class Huffman {
     }
 
 
-    public static void main(String[] args) {
-        Huffman huffman = new Huffman();
-        String data = "abcaab";
-        String encodedString = huffman.encode(data);
-        String decodedString = huffman.decode(encodedString);
-
-        System.out.println((data.equals(decodedString)));
-    }
+//    public static void main(String[] args) {
+//        Huffman huffman = new Huffman();
+//        String data = "abcaab";
+//        String encodedString = huffman.encode(data);
+//        String decodedString = huffman.decode(encodedString);
+//
+//        System.out.println((data.equals(decodedString)));
+//    }
 
     public String encode(String data) {
         String result = "";

@@ -5,13 +5,13 @@ import java.util.List;
 
 public class LZ77 {
 
-    public static void main(String[] args) {
-        LZ77 lz77 = new LZ77();
-        List<Pointer> pointers = lz77.encode("abbabbabbbaababa", 4);
-        String result = lz77.decode(pointers, 4);
-        System.out.println(pointers);
-        System.out.println(result);
-    }
+//    public static void main(String[] args) {
+//        LZ77 lz77 = new LZ77();
+//        List<Pointer> pointers = lz77.encode("abbabbabbbaababa", 4);
+//        String result = lz77.decode(pointers, 4);
+//        System.out.println(pointers);
+//        System.out.println(result);
+//    }
 
     public List<Pointer> encode(String data, int window_size) {
         List<Pointer> result = new ArrayList<>();

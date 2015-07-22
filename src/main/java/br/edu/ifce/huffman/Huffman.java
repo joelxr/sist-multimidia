@@ -1,5 +1,7 @@
 package br.edu.ifce.huffman;
 
+import br.edu.ifce.util.Util;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableSet;
@@ -22,26 +24,54 @@ public class Huffman {
 
 
     public static void main(String[] args) {
-        new Huffman().encode("123");
+        Huffman huffman = new Huffman();
+        String data = "abcaab";
+        String encodedString = huffman.encode(data);
+        String decodedString = huffman.decode(encodedString);
+
+        System.out.println((data.equals(decodedString)));
     }
 
-    public TreeSet<Node> encode(String data) {
+    public String encode(String data) {
+        String result = "";
 
         this.createDictionary(data);
         this.generateTree();
         this.generateDictionary();
 
-        /*
-        for (Node n : this.getNodes()) {
-            System.out.println(n);
+        for (Character c : data.toCharArray()) {
+            Map<Character, String> dic = this.getDictionary();
+            result += dic.get(c);
         }
 
         System.out.println(this.getDictionary());
-        System.out.println("Entropia: " + this.calculateEntropy());
-        System.out.println("Comprimento médio: " + this.getAverageLength());
-        */
+        System.out.println(result);
+        return result;
+    }
 
-        return nodes;
+    public String decode(String encodedString) {
+        String result = "";
+        int start = 0;
+        int end = 0;
+
+        while (end < encodedString.length()) {
+            String current = Util.getContent(encodedString, start, end);
+
+            for (Map.Entry<Character, String> entry : this.getDictionary().entrySet()) {
+                Character key = entry.getKey();
+                String value = entry.getValue();
+
+                if (current.equals(value)) {
+                    result += key;
+                    start += value.length();
+                    break;
+                }
+            }
+
+            end++;
+        }
+
+        return result;
     }
 
     public void createDictionary(String data) {

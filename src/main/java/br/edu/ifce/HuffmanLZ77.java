@@ -11,7 +11,7 @@ public class HuffmanLZ77 {
 
 	public static void main(String[] args) { // depois de implementado, passar string no args ou abrir dialog
 		
-		LZ77 lz77 = new LZ77();
+		LZ77 lz77 = new LZ77(4);
 
 		Huffman huffmanLength = new Huffman();
 		Huffman huffmanCharacter = new Huffman();
@@ -21,7 +21,7 @@ public class HuffmanLZ77 {
 		String positionColumn = "";
 		String characterColumn = "";
 
-        List<Pointer> pointers = lz77.encode("abbabbabbbaababa", 4);
+        List<Pointer> pointers = lz77.encode("abbabbabbbaababa");
         System.out.println("LZ77 Pointers:");
         System.out.println(pointers);
         
@@ -55,7 +55,7 @@ public class HuffmanLZ77 {
         System.out.println("Entropia: " + huffmanCharacter.calculateEntropy());
         System.out.println("Comprimento médio: " + huffmanCharacter.getAverageLength());
         
-        String result = lz77.decode(pointers, 4);
+        String result = lz77.decode(pointers);
         System.out.println(result);
         new Huffman().encode("123");
 

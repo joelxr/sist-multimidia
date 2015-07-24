@@ -47,10 +47,13 @@ public class HuffmanLZ77 {
 
 		System.out.println("\n## Huffman aplicado a coluna Length:");
 		System.out.println(lengthColumnEncoded);
+		System.out.println("Quantidade de bits para o comprimentos: " + lengthColumnEncoded.length());
 		System.out.println("\n## Huffman aplicado a coluna Position:");
 		System.out.println(positionColumnEncoded);
+		System.out.println("Quantidade de bits para as posições: "+ positionColumnEncoded.length());
 		System.out.println("\n## Huffman aplicado a coluna Position (chars):");
 		System.out.println(characterColumnEncoded);
+		System.out.println("Quantidade de bits para os símbolos: " + characterColumnEncoded.length());
 
 		// decoding..
 		String positionColumnDecode = huffmanPosition.decode(positionColumnEncoded);

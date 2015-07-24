@@ -28,7 +28,8 @@ public class HuffmanLZ77 {
 		String characterColumnEncoded = "";
 
 		List<Pointer> pointersEncoding = lz77.encode("abbabbabbbaababa");
-		System.out.println("LZ77 Pointers:");
+		System.out.println("## String original: abbabbabbbaababa");
+		System.out.println("LZ77 Pointers encoded:");
 		System.out.println(pointersEncoding);
 
 		for (Pointer p : pointersEncoding) {
@@ -44,29 +45,51 @@ public class HuffmanLZ77 {
 		positionColumnEncoded = huffmanPosition.encode(positionColumn);
 		characterColumnEncoded = huffmanCharacter.encode(characterColumn);
 
-		System.out.println("Huffman aplicado a coluna Length:");
+		System.out.println("\n## Huffman aplicado a coluna Length:");
 		System.out.println(lengthColumnEncoded);
-		System.out.println("Huffman aplicado a coluna Position:");
+		System.out.println("\n## Huffman aplicado a coluna Position:");
 		System.out.println(positionColumnEncoded);
-		System.out.println("Huffman aplicado a coluna Position (chars):");
+		System.out.println("\n## Huffman aplicado a coluna Position (chars):");
 		System.out.println(characterColumnEncoded);
 
-		// decoding.. considerando em outra máquina
-		Huffman huffmanPositionDecode = new Huffman();
+		// decoding..
+		String positionColumnDecode = huffmanPosition.decode(positionColumnEncoded);
+		String characterColumnDecode = huffmanCharacter.decode(characterColumnEncoded);
+		String lengthColumnDecode = huffmanLength.decode(lengthColumnEncoded);
+		System.out.println("\n## Coluna Position decoded: " + positionColumnDecode);
+		System.out.println("\n## Coluna Character decoded: " + characterColumnDecode);
+		System.out.println("\n## Coluna Length decoded: " + lengthColumnDecode);
 
-		String positionColumnDecode = "";
 		List<Pointer> pointersDecoding = new ArrayList<Pointer>();
 		String valuePointer = "";
 		int lengthPointer;
 		int positionPointer;
 
+		do {
+			// gambs pra acomodar o "-1"
+			String s = "";
+			if(positionColumnDecode.charAt(0) == '-') {
+				s = positionColumnDecode.substring(0, 2);
+				positionColumnDecode = positionColumnDecode.substring(2);
+				positionPointer = Integer.parseInt(s);
 
-		valuePointer = Character.toString(characterColumnEncoded.charAt(0));
-		characterColumnEncoded = characterColumnEncoded.substring(1);
+				valuePointer = Character.toString(characterColumnDecode.charAt(0));
+				characterColumnDecode = characterColumnDecode.substring(1);
+			}
+			else {
+				positionPointer = Integer.parseInt( Character.toString(positionColumnDecode.charAt(0)) );
+				positionColumnDecode = positionColumnDecode.substring(1);
 
+				valuePointer = "";
+			}
+			lengthPointer = Integer.parseInt( Character.toString(lengthColumnDecode.charAt(0)) );
+			lengthColumnDecode = lengthColumnDecode.substring(1);
 
-		//        String result = lz77.decode(pointers);
-		//        System.out.println(result);
+			pointersDecoding.add(new Pointer(valuePointer, positionPointer, lengthPointer));
+		} while(positionColumnDecode.length() > 0);
+
+		String resultFinal = lz77.decode(pointersDecoding);
+		System.out.println("\n## String original: " + resultFinal);
 
 	}
 
